@@ -1,25 +1,32 @@
+// Package main provides the entry point for the Infra Terraform provider.
 package main
 
 import (
+	"context"
 	"flag"
+	"log"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 
 	"github.com/infrahq/terraform-provider-infra/internal/provider"
 )
 
-// Run "go generate" to format example terraform files and generate the docs for the registry/website
-//go:generate terraform fmt -recursive ./examples/
-//go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
+// version is set during build via ldflags.
+var version = "dev"
 
 func main() {
-	var debug bool
+	var debugMode bool
 
-	flag.BoolVar(&debug, "debug", false, "set to true to run the provider with support for debuggers like delve")
+	flag.BoolVar(&debugMode, "debug", false, "set to true to run the provider with support for debuggers like delve")
 	flag.Parse()
 
-	plugin.Serve(&plugin.ServeOpts{
-		Debug:        debug,
-		ProviderFunc: provider.New,
-	})
+	opts := providerserver.ServeOpts{
+		Address: "registry.terraform.io/infrahq/infra",
+		Debug:   debugMode,
+	}
+
+	err := providerserver.Serve(context.Background(), provider.New(version), opts)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
