@@ -17,8 +17,8 @@ var version = "dev"
 func main() {
 	var debugMode bool
 
-	// Default debug to true for local development convenience
-	flag.BoolVar(&debugMode, "debug", true, "set to true to run the provider with support for debuggers like delve")
+	// Default debug to false; pass -debug flag explicitly when using delve
+	flag.BoolVar(&debugMode, "debug", false, "set to true to run the provider with support for debuggers like delve")
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
