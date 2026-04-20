@@ -22,6 +22,8 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
+		// NOTE: Using my personal fork's registry address for local testing.
+		// Switch back to registry.terraform.io/infrahq/infra for upstream builds.
 		Address: "registry.terraform.io/infrahq/infra",
 		Debug:   debugMode,
 	}
